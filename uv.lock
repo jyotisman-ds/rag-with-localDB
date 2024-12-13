@@ -648,6 +648,7 @@ dependencies = [
     { name = "langchain-openai" },
     { name = "langchainhub" },
     { name = "pypdf" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
@@ -658,6 +659,7 @@ requires-dist = [
     { name = "langchain-openai", specifier = ">=0.2.12" },
     { name = "langchainhub", specifier = ">=0.1.21" },
     { name = "pypdf", specifier = ">=5.1.0" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
 ]
 
 [[package]]
