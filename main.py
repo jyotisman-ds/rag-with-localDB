@@ -6,6 +6,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
+from langchain_ollama import OllamaEmbeddings
 from langchain_openai import OpenAI, OpenAIEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
 
@@ -24,10 +25,14 @@ def main():
     splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=30, separator="\n")
     docs = splitter.split_documents(documents=pdf_text)
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = None
+    if os.getenv("USE_OLLAMA") == "YES":
+        embeddings = OllamaEmbeddings(model="deepseek-r1:14b")
+    else:
+        embeddings = OpenAIEmbeddings()
     # vectorize and store the vectors in-memory
     vectorstore = None
-    if not os.path.exists("faiss_index_react"):
+    if not os.path.exists("faiss_index_react") and embeddings is not None:
         vectorstore = FAISS.from_documents(docs, embeddings)
     if vectorstore is not None:
         # persist for later use
@@ -46,7 +51,7 @@ def main():
     )
 
     res = retrieval_chain.invoke(
-        {"input": "Describe the principles of ReAct in 5 sentences"}
+        {"input": "Describe the principles of ReAct in 3 sentences"}
     )
     print(res["answer"])
 
